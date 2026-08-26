@@ -15,13 +15,17 @@ Nothing in this repo is employer/work property. Secrets stay out of git.
 
 ### Progress dashboard
 
-Open `dashboard/index.html` in a browser (RTL Hebrew). Refresh from Jira:
+Public site (GitHub Pages): https://yanivvi.github.io/vainer-home/
+
+Local / refresh from Jira:
 
 ```bash
 source .venv/bin/activate
 python dashboard/build.py
-open dashboard/index.html
+open docs/index.html
 ```
+
+`build.py` writes both `dashboard/` and `docs/` (Pages source).
 
 ## Setup (local)
 
