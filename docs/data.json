@@ -1,0 +1,314 @@
+{
+  "site": "https://vainer-house.atlassian.net",
+  "generated": "2026-08-26 11:37",
+  "overall": {
+    "total": 42,
+    "done": 4,
+    "ip": 6,
+    "todo": 32,
+    "pct": 10,
+    "pct_w": 17,
+    "epics": 12,
+    "epics_with_work": 10
+  },
+  "epics": [
+    {
+      "key": "CAPTAIN-34",
+      "summary": "תיקונים מול ספי",
+      "status": "To Do",
+      "done": 1,
+      "ip": 0,
+      "todo": 2,
+      "total": 3,
+      "pct": 33,
+      "pct_w": 33,
+      "assignees": [
+        {
+          "name": "Unassigned",
+          "done": 0,
+          "ip": 0,
+          "todo": 2,
+          "total": 2
+        },
+        {
+          "name": "Yaniv Vainer",
+          "done": 1,
+          "ip": 0,
+          "todo": 0,
+          "total": 1
+        }
+      ]
+    },
+    {
+      "key": "CAPTAIN-41",
+      "summary": "קניות חנות כלים / חומרי בניין",
+      "status": "To Do",
+      "done": 1,
+      "ip": 3,
+      "todo": 4,
+      "total": 8,
+      "pct": 12,
+      "pct_w": 31,
+      "assignees": [
+        {
+          "name": "Yaniv Vainer",
+          "done": 1,
+          "ip": 3,
+          "todo": 0,
+          "total": 4
+        },
+        {
+          "name": "Unassigned",
+          "done": 0,
+          "ip": 0,
+          "todo": 4,
+          "total": 4
+        }
+      ]
+    },
+    {
+      "key": "CAPTAIN-32",
+      "summary": "לפני מעבר",
+      "status": "Done",
+      "done": 1,
+      "ip": 1,
+      "todo": 4,
+      "total": 6,
+      "pct": 17,
+      "pct_w": 25,
+      "assignees": [
+        {
+          "name": "Sigal Tweig",
+          "done": 1,
+          "ip": 1,
+          "todo": 2,
+          "total": 4
+        },
+        {
+          "name": "Unassigned",
+          "done": 0,
+          "ip": 0,
+          "todo": 2,
+          "total": 2
+        }
+      ]
+    },
+    {
+      "key": "CAPTAIN-36",
+      "summary": "אמבטיות",
+      "status": "To Do",
+      "done": 0,
+      "ip": 0,
+      "todo": 2,
+      "total": 2,
+      "pct": 0,
+      "pct_w": 0,
+      "assignees": [
+        {
+          "name": "Unassigned",
+          "done": 0,
+          "ip": 0,
+          "todo": 2,
+          "total": 2
+        }
+      ]
+    },
+    {
+      "key": "CAPTAIN-33",
+      "summary": "גישות לבניין",
+      "status": "To Do",
+      "done": 0,
+      "ip": 0,
+      "todo": 1,
+      "total": 1,
+      "pct": 0,
+      "pct_w": 0,
+      "assignees": [
+        {
+          "name": "Yaniv Vainer",
+          "done": 0,
+          "ip": 0,
+          "todo": 1,
+          "total": 1
+        }
+      ]
+    },
+    {
+      "key": "CAPTAIN-39",
+      "summary": "חדרים ווילונות",
+      "status": "To Do",
+      "done": 0,
+      "ip": 0,
+      "todo": 6,
+      "total": 6,
+      "pct": 0,
+      "pct_w": 0,
+      "assignees": [
+        {
+          "name": "Unassigned",
+          "done": 0,
+          "ip": 0,
+          "todo": 4,
+          "total": 4
+        },
+        {
+          "name": "Yaniv Vainer",
+          "done": 0,
+          "ip": 0,
+          "todo": 2,
+          "total": 2
+        }
+      ]
+    },
+    {
+      "key": "CAPTAIN-35",
+      "summary": "מטבח",
+      "status": "To Do",
+      "done": 0,
+      "ip": 0,
+      "todo": 4,
+      "total": 4,
+      "pct": 0,
+      "pct_w": 0,
+      "assignees": [
+        {
+          "name": "Yaniv Vainer",
+          "done": 0,
+          "ip": 0,
+          "todo": 4,
+          "total": 4
+        }
+      ]
+    },
+    {
+      "key": "CAPTAIN-40",
+      "summary": "מרפסת ומערכות בית",
+      "status": "To Do",
+      "done": 0,
+      "ip": 0,
+      "todo": 3,
+      "total": 3,
+      "pct": 0,
+      "pct_w": 0,
+      "assignees": [
+        {
+          "name": "Unassigned",
+          "done": 0,
+          "ip": 0,
+          "todo": 2,
+          "total": 2
+        },
+        {
+          "name": "Yaniv Vainer",
+          "done": 0,
+          "ip": 0,
+          "todo": 1,
+          "total": 1
+        }
+      ]
+    },
+    {
+      "key": "CAPTAIN-38",
+      "summary": "קירות ומתגים",
+      "status": "To Do",
+      "done": 0,
+      "ip": 0,
+      "todo": 2,
+      "total": 2,
+      "pct": 0,
+      "pct_w": 0,
+      "assignees": [
+        {
+          "name": "Yaniv Vainer",
+          "done": 0,
+          "ip": 0,
+          "todo": 1,
+          "total": 1
+        },
+        {
+          "name": "Unassigned",
+          "done": 0,
+          "ip": 0,
+          "todo": 1,
+          "total": 1
+        }
+      ]
+    },
+    {
+      "key": "CAPTAIN-37",
+      "summary": "תאורה ותקרה",
+      "status": "To Do",
+      "done": 0,
+      "ip": 0,
+      "todo": 1,
+      "total": 1,
+      "pct": 0,
+      "pct_w": 0,
+      "assignees": [
+        {
+          "name": "Unassigned",
+          "done": 0,
+          "ip": 0,
+          "todo": 1,
+          "total": 1
+        }
+      ]
+    },
+    {
+      "key": "CAPTAIN-56",
+      "summary": "הובלה",
+      "status": "To Do",
+      "done": 0,
+      "ip": 0,
+      "todo": 0,
+      "total": 0,
+      "pct": 0,
+      "pct_w": 0,
+      "assignees": []
+    },
+    {
+      "key": "CAPTAIN-57",
+      "summary": "קבלת מזרון",
+      "status": "To Do",
+      "done": 0,
+      "ip": 0,
+      "todo": 0,
+      "total": 0,
+      "pct": 0,
+      "pct_w": 0,
+      "assignees": []
+    }
+  ],
+  "assignees": [
+    {
+      "name": "Yaniv Vainer",
+      "done": 3,
+      "ip": 4,
+      "todo": 9,
+      "total": 16,
+      "pct": 19,
+      "pct_w": 31,
+      "epic_count": 7
+    },
+    {
+      "name": "Sigal Tweig",
+      "done": 1,
+      "ip": 2,
+      "todo": 3,
+      "total": 6,
+      "pct": 17,
+      "pct_w": 33,
+      "epic_count": 1
+    },
+    {
+      "name": "Unassigned",
+      "done": 0,
+      "ip": 0,
+      "todo": 20,
+      "total": 20,
+      "pct": 0,
+      "pct_w": 0,
+      "epic_count": 8
+    }
+  ]
+}

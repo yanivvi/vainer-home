@@ -213,11 +213,22 @@ def main() -> None:
         template_path.write_text(template)
 
     print("Fetching Jira…", flush=True)
+    # Auth stays in local .env / process env via require_env — never hardcoded.
     raw = fetch()
     payload = build_payload(raw)
+    html = render(payload, template_path.read_text())
     data_path.write_text(json.dumps(payload, ensure_ascii=False, indent=2))
-    out_path.write_text(render(payload, template_path.read_text()))
+    out_path.write_text(html)
+
+    # Publish copy for GitHub Pages (branch main, /docs).
+    docs_dir = ROOT / "docs"
+    docs_dir.mkdir(exist_ok=True)
+    (docs_dir / ".nojekyll").write_text("")
+    (docs_dir / "index.html").write_text(html)
+    (docs_dir / "data.json").write_text(json.dumps(payload, ensure_ascii=False, indent=2))
+
     print(f"Wrote {out_path.relative_to(ROOT)}")
+    print(f"Wrote {(docs_dir / 'index.html').relative_to(ROOT)} (GitHub Pages)")
     print(
         f"Overall {payload['overall']['pct']}% done "
         f"({payload['overall']['done']}/{payload['overall']['total']}) · "
