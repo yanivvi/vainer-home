@@ -17,15 +17,22 @@ Nothing in this repo is employer/work property. Secrets stay out of git.
 
 Public site (GitHub Pages): https://yanivvi.github.io/vainer-home/
 
-Local / refresh from Jira:
+Auto-updates hourly from personal Jira via GitHub Actions (Secrets: `CAPTAIN_JIRA_EMAIL`, `CAPTAIN_JIRA_API_TOKEN`). Manual run: **Actions → Dashboard Pages → Run workflow**.
+
+Local live feed (token stays on your machine):
+
+```bash
+source .venv/bin/activate
+python dashboard/serve.py
+# http://127.0.0.1:8765/  — refresh button + dark mode
+```
+
+One-shot static rebuild (also writes `docs/` for Pages):
 
 ```bash
 source .venv/bin/activate
 python dashboard/build.py
-open docs/index.html
 ```
-
-`build.py` writes both `dashboard/` and `docs/` (Pages source).
 
 ## Setup (local)
 

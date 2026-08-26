@@ -1,0 +1,62 @@
+name: Dashboard Pages
+
+on:
+  schedule:
+    # Every hour (UTC)
+    - cron: "0 * * * *"
+  workflow_dispatch:
+  push:
+    paths:
+      - "dashboard/**"
+      - "docs/**"
+      - "requirements.txt"
+      - ".github/workflows/dashboard-pages.yml"
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Build dashboard from Jira
+        env:
+          # Site URL is not secret; token + email come from repo Secrets.
+          CAPTAIN_JIRA_URL: https://vainer-house.atlassian.net
+          CAPTAIN_JIRA_EMAIL: ${{ secrets.CAPTAIN_JIRA_EMAIL }}
+          CAPTAIN_JIRA_API_TOKEN: ${{ secrets.CAPTAIN_JIRA_API_TOKEN }}
+        run: python dashboard/build.py
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
