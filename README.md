@@ -9,8 +9,19 @@ Nothing in this repo is employer/work property. Secrets stay out of git.
 | Path | Purpose |
 |------|---------|
 | `.cursor/skills/captain/` | Cursor skill + CLI for personal Jira |
+| `dashboard/` | Epic progress HTML (gauges + assignee stats) |
 | `transcripts/` | Home walkthrough transcripts (e.g. WhatsApp → Whisper) |
 | `requirements.txt` | Python deps for the captain CLI |
+
+### Progress dashboard
+
+Open `dashboard/index.html` in a browser (RTL Hebrew). Refresh from Jira:
+
+```bash
+source .venv/bin/activate
+python dashboard/build.py
+open dashboard/index.html
+```
 
 ## Setup (local)
 
