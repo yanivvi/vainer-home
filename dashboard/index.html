@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>vainer-home · התקדמות אפיקים</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700;800&family=Syne:wght@600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --ink: #162028;
+      --ink-soft: #3d4a55;
+      --muted: #6b7782;
+      --line: color-mix(in srgb, var(--ink) 10%, transparent);
+      --paper: #eef2f4;
+      --panel: color-mix(in srgb, white 72%, transparent);
+      --teal: #0f7c72;
+      --teal-deep: #0a524c;
+      --amber: #c47b1a;
+      --slate: #5b6b7a;
+      --done: #0f7c72;
+      --progress: #c47b1a;
+      --todo: #8a96a1;
+      --radius: 18px;
+      --shadow: 0 18px 40px color-mix(in srgb, var(--ink) 8%, transparent);
+      --font-display: "Syne", "Heebo", sans-serif;
+      --font-body: "Heebo", sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--ink);
+      font-family: var(--font-body);
+      background:
+        radial-gradient(1200px 700px at 90% -10%, #d7e8e4 0%, transparent 55%),
+        radial-gradient(900px 600px at -10% 20%, #e4e9f0 0%, transparent 50%),
+        linear-gradient(165deg, #f4f7f8 0%, #e7edf1 48%, #dde8e5 100%);
+      background-attachment: fixed;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0.35;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.45'/%3E%3C/svg%3E");
+      mix-blend-mode: soft-light;
+    }
+
+    .wrap {
+      width: min(1180px, calc(100% - 2rem));
+      margin-inline: auto;
+      padding-block: 2.5rem 4rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Hero — one composition */
+    .hero {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 2rem;
+      align-items: center;
+      min-height: min(72vh, 620px);
+      padding-block: 1rem 2.5rem;
+      animation: rise 0.8s ease both;
+    }
+    @media (max-width: 860px) {
+      .hero {
+        grid-template-columns: 1fr;
+        min-height: auto;
+        text-align: center;
+      }
+      .hero-gauge { justify-self: center; }
+    }
+
+    .brand {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: clamp(2.8rem, 7vw, 5.2rem);
+      line-height: 0.95;
+      letter-spacing: -0.04em;
+      color: var(--teal-deep);
+      margin: 0 0 1rem;
+    }
+    .hero h2 {
+      margin: 0 0 0.75rem;
+      font-size: clamp(1.35rem, 2.6vw, 1.9rem);
+      font-weight: 700;
+      color: var(--ink);
+    }
+    .hero p {
+      margin: 0;
+      max-width: 36ch;
+      color: var(--ink-soft);
+      font-size: 1.05rem;
+      line-height: 1.55;
+    }
+    @media (max-width: 860px) {
+      .hero p { margin-inline: auto; }
+    }
+    .meta {
+      margin-top: 1.25rem;
+      color: var(--muted);
+      font-size: 0.88rem;
+    }
+    .meta a { color: var(--teal-deep); text-underline-offset: 3px; }
+
+    .hero-gauge {
+      display: grid;
+      place-items: center;
+      animation: rise 0.9s 0.12s ease both;
+    }
+
+    /* Gauge */
+    .gauge {
+      --size: 240px;
+      width: var(--size);
+      height: var(--size);
+      position: relative;
+    }
+    .gauge svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+    .gauge .track { fill: none; stroke: color-mix(in srgb, var(--ink) 8%, transparent); stroke-width: 14; }
+    .gauge .arc-ip {
+      fill: none;
+      stroke: var(--amber);
+      stroke-width: 14;
+      stroke-linecap: round;
+      stroke-dasharray: var(--circ);
+      stroke-dashoffset: var(--circ);
+      transition: stroke-dashoffset 1.2s cubic-bezier(.22,1,.36,1);
+    }
+    .gauge .arc-done {
+      fill: none;
+      stroke: var(--teal);
+      stroke-width: 14;
+      stroke-linecap: round;
+      stroke-dasharray: var(--circ);
+      stroke-dashoffset: var(--circ);
+      transition: stroke-dashoffset 1.35s 0.1s cubic-bezier(.22,1,.36,1);
+    }
+    .gauge-center {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-content: center;
+      text-align: center;
+      pointer-events: none;
+    }
+    .gauge-center .pct {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 3.2rem;
+      letter-spacing: -0.04em;
+      line-height: 1;
+      color: var(--teal-deep);
+    }
+    .gauge-center .label {
+      margin-top: 0.35rem;
+      color: var(--muted);
+      font-size: 0.92rem;
+      font-weight: 500;
+    }
+
+    .gauge.sm { --size: 132px; }
+    .gauge.sm .track,
+    .gauge.sm .arc-ip,
+    .gauge.sm .arc-done { stroke-width: 11; }
+    .gauge.sm .gauge-center .pct { font-size: 1.7rem; }
+    .gauge.sm .gauge-center .label { font-size: 0.75rem; }
+
+    /* Stats strip */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+      margin-block: 0.5rem 2.75rem;
+      animation: rise 0.8s 0.18s ease both;
+    }
+    @media (max-width: 720px) {
+      .stats { grid-template-columns: repeat(2, 1fr); }
+    }
+    .stat {
+      padding: 1.1rem 1.15rem 1.2rem;
+      border-top: 2px solid var(--line);
+    }
+    .stat .n {
+      font-family: var(--font-display);
+      font-size: clamp(1.8rem, 4vw, 2.4rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1;
+    }
+    .stat .t {
+      margin-top: 0.4rem;
+      color: var(--muted);
+      font-size: 0.92rem;
+      font-weight: 500;
+    }
+    .stat.done .n { color: var(--teal-deep); }
+    .stat.ip .n { color: var(--amber); }
+    .stat.todo .n { color: var(--slate); }
+
+    section { margin-block: 2.5rem; }
+    .section-head {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: 1.25rem;
+    }
+    .section-head h3 {
+      margin: 0;
+      font-size: 1.45rem;
+      font-weight: 700;
+    }
+    .section-head p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    /* Epic grid */
+    .epic-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 1rem;
+    }
+    .epic {
+      background: var(--panel);
+      backdrop-filter: blur(10px);
+      border: 1px solid color-mix(in srgb, white 55%, var(--line));
+      border-radius: var(--radius);
+      padding: 1.15rem 1.15rem 1.25rem;
+      box-shadow: var(--shadow);
+      display: grid;
+      gap: 0.85rem;
+      justify-items: center;
+      text-align: center;
+      opacity: 0;
+      transform: translateY(12px);
+      animation: rise 0.65s ease forwards;
+      transition: transform 0.25s ease, border-color 0.25s ease;
+    }
+    .epic:hover {
+      transform: translateY(-3px);
+      border-color: color-mix(in srgb, var(--teal) 35%, white);
+    }
+    .epic.empty { opacity: 0.72; }
+    .epic-key {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--muted);
+      letter-spacing: 0.02em;
+    }
+    .epic-key a {
+      color: inherit;
+      text-decoration: none;
+    }
+    .epic-key a:hover { color: var(--teal-deep); text-decoration: underline; }
+    .epic-title {
+      margin: 0;
+      font-size: 1.05rem;
+      font-weight: 700;
+      line-height: 1.3;
+      min-height: 2.6em;
+    }
+    .epic-counts {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem 0.75rem;
+      justify-content: center;
+      font-size: 0.8rem;
+      color: var(--ink-soft);
+      font-weight: 500;
+    }
+    .epic-counts span::before {
+      content: "";
+      display: inline-block;
+      width: 0.5rem;
+      height: 0.5rem;
+      border-radius: 2px;
+      margin-inline-end: 0.35rem;
+      vertical-align: middle;
+    }
+    .epic-counts .d::before { background: var(--done); }
+    .epic-counts .p::before { background: var(--progress); }
+    .epic-counts .t::before { background: var(--todo); }
+
+    .epic-assignees {
+      width: 100%;
+      display: grid;
+      gap: 0.35rem;
+      text-align: start;
+      border-top: 1px solid var(--line);
+      padding-top: 0.75rem;
+    }
+    .epic-assignees .row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 0.5rem;
+      font-size: 0.78rem;
+      color: var(--ink-soft);
+    }
+    .epic-assignees .bar {
+      grid-column: 1 / -1;
+      height: 5px;
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--ink) 8%, transparent);
+      overflow: hidden;
+    }
+    .epic-assignees .bar > i {
+      display: block;
+      height: 100%;
+      width: 0;
+      background: linear-gradient(90deg, var(--teal), color-mix(in srgb, var(--teal) 55%, var(--amber)));
+      border-radius: inherit;
+      transition: width 1s cubic-bezier(.22,1,.36,1);
+    }
+
+    /* Assignees */
+    .assignee-list {
+      display: grid;
+      gap: 1rem;
+    }
+    .assignee {
+      display: grid;
+      grid-template-columns: 170px 1fr auto;
+      gap: 1rem;
+      align-items: center;
+      padding: 1.1rem 1.2rem;
+      background: var(--panel);
+      backdrop-filter: blur(10px);
+      border: 1px solid color-mix(in srgb, white 55%, var(--line));
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      opacity: 0;
+      animation: rise 0.65s ease forwards;
+    }
+    @media (max-width: 720px) {
+      .assignee {
+        grid-template-columns: 1fr;
+        gap: 0.65rem;
+      }
+    }
+    .assignee-name {
+      font-weight: 700;
+      font-size: 1.05rem;
+    }
+    .assignee-sub {
+      color: var(--muted);
+      font-size: 0.82rem;
+      margin-top: 0.15rem;
+    }
+    .stack {
+      height: 14px;
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--ink) 7%, transparent);
+      overflow: hidden;
+      display: flex;
+      direction: ltr;
+    }
+    .stack > i {
+      display: block;
+      height: 100%;
+      width: 0;
+      transition: width 1.1s cubic-bezier(.22,1,.36,1);
+    }
+    .stack .d { background: var(--done); }
+    .stack .p { background: var(--progress); }
+    .stack .t { background: var(--todo); }
+    .assignee-pct {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 1.45rem;
+      color: var(--teal-deep);
+      letter-spacing: -0.03em;
+      min-width: 4.5rem;
+      text-align: start;
+    }
+
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.85rem 1.25rem;
+      margin-top: 1.25rem;
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+    .legend i {
+      display: inline-block;
+      width: 0.65rem;
+      height: 0.65rem;
+      border-radius: 2px;
+      margin-inline-end: 0.4rem;
+      vertical-align: middle;
+    }
+    .legend .d { background: var(--done); }
+    .legend .p { background: var(--progress); }
+    .legend .t { background: var(--todo); }
+
+    footer {
+      margin-top: 3rem;
+      padding-top: 1.25rem;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 0.85rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem 1.25rem;
+      justify-content: space-between;
+    }
+
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(14px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="hero">
+      <div>
+        <p class="brand">vainer-home</p>
+        <h2>התקדמות לפי אפיק</h2>
+        <p>מבט חי על משימות הבית — כמה הושלם, מה בתנועה, ומה נשאר לכל אחראי.</p>
+        <p class="meta" id="meta"></p>
+      </div>
+      <div class="hero-gauge" id="overall-gauge"></div>
+    </header>
+
+    <div class="stats" id="stats"></div>
+
+    <section>
+      <div class="section-head">
+        <div>
+          <h3>אפיקים</h3>
+          <p>מד התקדמות לכל אפיק · ירוק = הושלם · כתום = בתהליך</p>
+        </div>
+      </div>
+      <div class="epic-grid" id="epics"></div>
+      <div class="legend">
+        <span><i class="d"></i>Done</span>
+        <span><i class="p"></i>In Progress</span>
+        <span><i class="t"></i>To Do</span>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-head">
+        <div>
+          <h3>לפי אחראי</h3>
+          <p>פילוח משימות והתקדמות לכל assignee</p>
+        </div>
+      </div>
+      <div class="assignee-list" id="assignees"></div>
+    </section>
+
+    <footer>
+      <span>נתונים מ־Jira האישי (CAPTAIN) · לא כולל קניין עבודה</span>
+      <span id="footer-gen"></span>
+    </footer>
+  </div>
+
+  <script id="dashboard-data" type="application/json">
+{
+  "site": "https://vainer-house.atlassian.net",
+  "generated": "2026-08-26 11:37",
+  "overall": {
+    "total": 42,
+    "done": 4,
+    "ip": 6,
+    "todo": 32,
+    "pct": 10,
+    "pct_w": 17,
+    "epics": 12,
+    "epics_with_work": 10
+  },
+  "epics": [
+    {
+      "key": "CAPTAIN-34",
+      "summary": "תיקונים מול ספי",
+      "status": "To Do",
+      "done": 1,
+      "ip": 0,
+      "todo": 2,
+      "total": 3,
+      "pct": 33,
+      "pct_w": 33,
+      "assignees": [
+        {
+          "name": "Unassigned",
+          "done": 0,
+          "ip": 0,
+          "todo": 2,
+          "total": 2
+        },
+        {
+          "name": "Yaniv Vainer",
+          "done": 1,
+          "ip": 0,
+          "todo": 0,
+          "total": 1
+        }
+      ]
+    },
+    {
+      "key": "CAPTAIN-41",
+      "summary": "קניות חנות כלים / חומרי בניין",
+      "status": "To Do",
+      "done": 1,
+      "ip": 3,
+      "todo": 4,
+      "total": 8,
+      "pct": 12,
+      "pct_w": 31,
+      "assignees": [
+        {
+          "name": "Yaniv Vainer",
+          "done": 1,
+          "ip": 3,
+          "todo": 0,
+          "total": 4
+        },
+        {
+          "name": "Unassigned",
+          "done": 0,
+          "ip": 0,
+          "todo": 4,
+          "total": 4
+        }
+      ]
+    },
+    {
+      "key": "CAPTAIN-32",
+      "summary": "לפני מעבר",
+      "status": "Done",
+      "done": 1,
+      "ip": 1,
+      "todo": 4,
+      "total": 6,
+      "pct": 17,
+      "pct_w": 25,
+      "assignees": [
+        {
+          "name": "Sigal Tweig",
+          "done": 1,
+          "ip": 1,
+          "todo": 2,
+          "total": 4
+        },
+        {
+          "name": "Unassigned",
+          "done": 0,
+          "ip": 0,
+          "todo": 2,
+          "total": 2
+        }
+      ]
+    },
+    {
+      "key": "CAPTAIN-36",
+      "summary": "אמבטיות",
+      "status": "To Do",
+      "done": 0,
+      "ip": 0,
+      "todo": 2,
+      "total": 2,
+      "pct": 0,
+      "pct_w": 0,
+      "assignees": [
+        {
+          "name": "Unassigned",
+          "done": 0,
+          "ip": 0,
+          "todo": 2,
+          "total": 2
+        }
+      ]
+    },
+    {
+      "key": "CAPTAIN-33",
+      "summary": "גישות לבניין",
+      "status": "To Do",
+      "done": 0,
+      "ip": 0,
+      "todo": 1,
+      "total": 1,
+      "pct": 0,
+      "pct_w": 0,
+      "assignees": [
+        {
+          "name": "Yaniv Vainer",
+          "done": 0,
+          "ip": 0,
+          "todo": 1,
+          "total": 1
+        }
+      ]
+    },
+    {
+      "key": "CAPTAIN-39",
+      "summary": "חדרים ווילונות",
+      "status": "To Do",
+      "done": 0,
+      "ip": 0,
+      "todo": 6,
+      "total": 6,
+      "pct": 0,
+      "pct_w": 0,
+      "assignees": [
+        {
+          "name": "Unassigned",
+          "done": 0,
+          "ip": 0,
+          "todo": 4,
+          "total": 4
+        },
+        {
+          "name": "Yaniv Vainer",
+          "done": 0,
+          "ip": 0,
+          "todo": 2,
+          "total": 2
+        }
+      ]
+    },
+    {
+      "key": "CAPTAIN-35",
+      "summary": "מטבח",
+      "status": "To Do",
+      "done": 0,
+      "ip": 0,
+      "todo": 4,
+      "total": 4,
+      "pct": 0,
+      "pct_w": 0,
+      "assignees": [
+        {
+          "name": "Yaniv Vainer",
+          "done": 0,
+          "ip": 0,
+          "todo": 4,
+          "total": 4
+        }
+      ]
+    },
+    {
+      "key": "CAPTAIN-40",
+      "summary": "מרפסת ומערכות בית",
+      "status": "To Do",
+      "done": 0,
+      "ip": 0,
+      "todo": 3,
+      "total": 3,
+      "pct": 0,
+      "pct_w": 0,
+      "assignees": [
+        {
+          "name": "Unassigned",
+          "done": 0,
+          "ip": 0,
+          "todo": 2,
+          "total": 2
+        },
+        {
+          "name": "Yaniv Vainer",
+          "done": 0,
+          "ip": 0,
+          "todo": 1,
+          "total": 1
+        }
+      ]
+    },
+    {
+      "key": "CAPTAIN-38",
+      "summary": "קירות ומתגים",
+      "status": "To Do",
+      "done": 0,
+      "ip": 0,
+      "todo": 2,
+      "total": 2,
+      "pct": 0,
+      "pct_w": 0,
+      "assignees": [
+        {
+          "name": "Yaniv Vainer",
+          "done": 0,
+          "ip": 0,
+          "todo": 1,
+          "total": 1
+        },
+        {
+          "name": "Unassigned",
+          "done": 0,
+          "ip": 0,
+          "todo": 1,
+          "total": 1
+        }
+      ]
+    },
+    {
+      "key": "CAPTAIN-37",
+      "summary": "תאורה ותקרה",
+      "status": "To Do",
+      "done": 0,
+      "ip": 0,
+      "todo": 1,
+      "total": 1,
+      "pct": 0,
+      "pct_w": 0,
+      "assignees": [
+        {
+          "name": "Unassigned",
+          "done": 0,
+          "ip": 0,
+          "todo": 1,
+          "total": 1
+        }
+      ]
+    },
+    {
+      "key": "CAPTAIN-56",
+      "summary": "הובלה",
+      "status": "To Do",
+      "done": 0,
+      "ip": 0,
+      "todo": 0,
+      "total": 0,
+      "pct": 0,
+      "pct_w": 0,
+      "assignees": []
+    },
+    {
+      "key": "CAPTAIN-57",
+      "summary": "קבלת מזרון",
+      "status": "To Do",
+      "done": 0,
+      "ip": 0,
+      "todo": 0,
+      "total": 0,
+      "pct": 0,
+      "pct_w": 0,
+      "assignees": []
+    }
+  ],
+  "assignees": [
+    {
+      "name": "Yaniv Vainer",
+      "done": 3,
+      "ip": 4,
+      "todo": 9,
+      "total": 16,
+      "pct": 19,
+      "pct_w": 31,
+      "epic_count": 7
+    },
+    {
+      "name": "Sigal Tweig",
+      "done": 1,
+      "ip": 2,
+      "todo": 3,
+      "total": 6,
+      "pct": 17,
+      "pct_w": 33,
+      "epic_count": 1
+    },
+    {
+      "name": "Unassigned",
+      "done": 0,
+      "ip": 0,
+      "todo": 20,
+      "total": 20,
+      "pct": 0,
+      "pct_w": 0,
+      "epic_count": 8
+    }
+  ]
+}
+  </script>
+  <script>
+    const DATA = JSON.parse(document.getElementById("dashboard-data").textContent);
+
+    const R = 70;
+    const C = 2 * Math.PI * R;
+
+    function gaugeHTML(pctDone, pctWeighted, sizeClass = "", label = "הושלם") {
+      // Outer visual: done arc = pctDone; ip shown as extra toward weighted
+      const doneLen = (pctDone / 100) * C;
+      const wLen = (pctWeighted / 100) * C;
+      return `
+        <div class="gauge ${sizeClass}" style="--circ:${C}">
+          <svg viewBox="0 0 160 160" aria-hidden="true">
+            <circle class="track" cx="80" cy="80" r="${R}"></circle>
+            <circle class="arc-ip" cx="80" cy="80" r="${R}" data-offset="${C - wLen}"></circle>
+            <circle class="arc-done" cx="80" cy="80" r="${R}" data-offset="${C - doneLen}"></circle>
+          </svg>
+          <div class="gauge-center">
+            <div class="pct">${pctDone}%</div>
+            <div class="label">${label}</div>
+          </div>
+        </div>`;
+    }
+
+    function animateGauges(root = document) {
+      requestAnimationFrame(() => {
+        root.querySelectorAll(".arc-ip, .arc-done").forEach((el) => {
+          el.style.strokeDashoffset = el.dataset.offset;
+        });
+        root.querySelectorAll(".epic-assignees .bar > i, .stack > i").forEach((el) => {
+          el.style.width = el.dataset.w;
+        });
+      });
+    }
+
+    const o = DATA.overall;
+    document.getElementById("overall-gauge").innerHTML =
+      gaugeHTML(o.pct, o.pct_w, "", "מהמשימות");
+
+    document.getElementById("meta").innerHTML =
+      `עודכן ${DATA.generated} · <a href="${DATA.site}" target="_blank" rel="noopener">vainer-house</a> · ${o.epics} אפיקים · ${o.total} משימות`;
+
+    document.getElementById("footer-gen").textContent = `נוצר ${DATA.generated}`;
+
+    document.getElementById("stats").innerHTML = `
+      <div class="stat"><div class="n">${o.total}</div><div class="t">סה״כ משימות</div></div>
+      <div class="stat done"><div class="n">${o.done}</div><div class="t">הושלמו</div></div>
+      <div class="stat ip"><div class="n">${o.ip}</div><div class="t">בתהליך</div></div>
+      <div class="stat todo"><div class="n">${o.todo}</div><div class="t">לעשות</div></div>
+    `;
+
+    const epicsEl = document.getElementById("epics");
+    epicsEl.innerHTML = DATA.epics.map((e, idx) => {
+      const empty = e.total === 0;
+      const assignees = (e.assignees || []).map((a) => {
+        const pct = a.total ? Math.round(100 * a.done / a.total) : 0;
+        return `
+          <div class="row">
+            <span>${a.name}</span>
+            <span>${a.done}/${a.total}</span>
+            <div class="bar"><i data-w="${pct}%"></i></div>
+          </div>`;
+      }).join("");
+      return `
+        <article class="epic ${empty ? "empty" : ""}" style="animation-delay:${0.05 + idx * 0.04}s">
+          <div class="epic-key"><a href="${DATA.site}/browse/${e.key}" target="_blank" rel="noopener">${e.key}</a></div>
+          <h4 class="epic-title">${e.summary}</h4>
+          ${gaugeHTML(e.pct, e.pct_w, "sm", empty ? "אין משימות" : `${e.done}/${e.total}`)}
+          <div class="epic-counts">
+            <span class="d">${e.done} Done</span>
+            <span class="p">${e.ip} Progress</span>
+            <span class="t">${e.todo} To Do</span>
+          </div>
+          ${assignees ? `<div class="epic-assignees">${assignees}</div>` : ""}
+        </article>`;
+    }).join("");
+
+    const asEl = document.getElementById("assignees");
+    asEl.innerHTML = DATA.assignees.map((a, idx) => {
+      const d = a.total ? (100 * a.done / a.total) : 0;
+      const p = a.total ? (100 * a.ip / a.total) : 0;
+      const t = a.total ? (100 * a.todo / a.total) : 0;
+      return `
+        <article class="assignee" style="animation-delay:${0.08 + idx * 0.06}s">
+          <div>
+            <div class="assignee-name">${a.name}</div>
+            <div class="assignee-sub">${a.total} משימות · ${a.epic_count} אפיקים</div>
+          </div>
+          <div class="stack" title="Done / In Progress / To Do">
+            <i class="d" data-w="${d}%"></i>
+            <i class="p" data-w="${p}%"></i>
+            <i class="t" data-w="${t}%"></i>
+          </div>
+          <div class="assignee-pct">${a.pct}%</div>
+        </article>`;
+    }).join("");
+
+    // Kick arc animations after paint
+    setTimeout(() => animateGauges(), 40);
+  </script>
+</body>
+</html>
